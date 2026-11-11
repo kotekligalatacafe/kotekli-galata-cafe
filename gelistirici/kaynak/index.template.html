@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-{{SCRIPT_HASH}}' https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com/maps/embed; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kötekli Galata Cafe | Mayıs 2017’den Beri</title>
+<meta name="description" content="Kötekli Galata Cafe, Muğla Kötekli’de Mayıs 2017’den beri zengin mutfağı, kahve çeşitleri, nostaljik atmosferi ve öğrenci dostu fiyatlarıyla buluşma noktanız.">
+<meta property="og:title" content="Kötekli Galata Cafe | Mayıs 2017’den Beri">
+<meta property="og:description" content="Kötekli Galata Cafe, Muğla Kötekli’de Mayıs 2017’den beri zengin mutfağı, kahve çeşitleri, nostaljik atmosferi ve öğrenci dostu fiyatlarıyla buluşma noktanız.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>{{SITE_CSS}}</style>
+</head>
+<body>
+
+<canvas id="scene-canvas"></canvas>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<nav class="site-nav" id="siteNav">
+  <a href="#top" class="logo"><span class="mark">G</span>Kötekli Galata Cafe</a>
+  <ul class="nav-links">
+    <li><a href="#hakkimizda">Hakkımızda</a></li>
+    <li><a href="#menu">Menü</a></li>
+    <li><a href="#galeri">Galeri</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a id="waNavBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa">WhatsApp</a>
+  </div>
+  <button class="hamburger" id="menuOpenBtn" aria-controls="mobileNav" aria-label="Menüyü aç" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav" inert>
+  <button class="mobile-close" id="menuCloseBtn" aria-label="Menüyü kapat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+  </button>
+  <ul>
+    <li><a href="#top" class="mnav-link">Ana Sayfa</a></li>
+    <li><a href="#hakkimizda" class="mnav-link">Hakkımızda</a></li>
+    <li><a href="#menu" class="mnav-link">Menü</a></li>
+    <li><a href="#galeri" class="mnav-link">Galeri</a></li>
+    <li><a href="#iletisim" class="mnav-link">İletişim</a></li>
+  </ul>
+  <div class="mobile-actions">
+    <a id="waMobileBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa mnav-link">WhatsApp'tan Yaz</a>
+    <a href="#iletisim" class="btn ghost mnav-link">Yol Tarifi Al</a>
+  </div>
+</div>
+
+<main id="top" class="page">
+
+  <section class="hero">
+    <p class="eyebrow">Kötekli, Muğla</p>
+    <h1>Kötekli Galata Cafe</h1>
+    <p class="sub">Sadece bir kahve değil — dikkatle kurulmuş bir an. Zanaat, ışık ve sessizlik üzerine.</p>
+    <div class="hero-cta">
+      <a href="#menu" class="btn">Menüyü Keşfet</a>
+      <a href="#iletisim" class="btn ghost">Yol Tarifi Al</a>
+    </div>
+    <div class="scroll-hint"><div class="line"></div><span>KAYDIR</span></div>
+  </section>
+
+  <section class="statement" id="hakkimizda">
+    <div class="statement-inner">
+      <span class="kicker">Hakkımızda · Mayıs 2017</span>
+      <h2>Kötekli Galata Cafe</h2>
+      <p class="small">Kötekli Galata Cafe, zengin mutfağı, geniş içecek seçenekleri ve öğrenci dostu fiyat politikasıyla misafirlerine keyifli bir deneyim sunuyor. Standart kafe anlayışının ötesine geçen nostaljik tasarımı ve müşteri odaklı hizmet yaklaşımıyla, her ziyaretin özel bir anıya dönüşmesini hedefliyor.</p>
+      <h3>Hikâyemiz</h3>
+      <p class="small">Mayıs 2017'de Muğla'nın Kötekli bölgesinde kapılarını açan Kötekli Galata Cafe, öğrencilere ve tüm Muğla halkına kaliteli bir kafe deneyimi sunma amacıyla kuruldu. Kurucularının İstanbul'un tarihî Galata semtinden Muğla'ya taşıdığı yalnızca bir isim değil, aynı zamanda kaliteli hizmet anlayışıydı. Zamanla zenginleşen menüsü ve misafirleriyle kurduğu samimi bağ sayesinde işletme, Muğla'nın sevilen buluşma noktalarından biri haline geldi.</p>
+      <h3>Kuruluş Amacımız</h3>
+      <p class="small">Kötekli Galata Cafe, kaliteli lezzetleri ulaşılabilir fiyatlarla buluşturmak ve her misafirin kendini özel hissedeceği sıcak, samimi ve nostaljik bir buluşma noktası oluşturmak amacıyla kuruldu.</p>
+    </div>
+  </section>
+
+  <section class="menu opaque" id="menu">
+    <div class="container">
+      <div class="menu-top">
+        <div class="section-head" style="margin-bottom:0;">
+          <span class="kicker">Menü</span>
+          <h2>Kahvaltıdan Dünya Mutfağına, Kahve Keyfinden Uzun Sohbetlere…</h2>
+          <p>Kötekli Galata Cafe, zengin kahvaltı seçenekleri, dünya mutfağından lezzetler ve özenle hazırlanan kahve çeşitleriyle günün her anına eşlik ediyor.</p>
+          <a class="btn ghost menu-qr-link" href="https://qria.com.tr/galata-kafe" target="_blank" rel="noopener noreferrer" aria-label="Fiyatları QR Menüde Gör (yeni sekme)">Fiyatları QR Menüde Gör</a>
+        </div>
+      </div>
+      <div class="menu-featured">
+        <h3>Öne Çıkanlar</h3>
+        <div class="menu-feature-grid">
+          <button type="button" class="menu-feature" data-category="Kahvaltılar"><strong>Kahvaltılar</strong><span>Serpme Kahvaltı ve Galata Kahvaltı</span></button>
+          <button type="button" class="menu-feature" data-category="Tostlar ve Ekmek Üstü"><strong>Ekmek Üstü Lezzet No. 1</strong><span>Pizza sosu, kaşar, zeytin, salam, sosis ve mısır. Yanında patates kızartması.</span></button>
+          <button type="button" class="menu-feature" data-category="Ana Yemekler"><strong>Mantar Soslu Tavuk Schnitzel</strong><span>Makarna, patates kızartması ve iki sos ile servis edilir.</span></button>
+          <button type="button" class="menu-feature" data-category="Pizzalar"><strong>Galata Special Pizza</strong><span>No. 1 ve No. 2 seçenekleri.</span></button>
+          <button type="button" class="menu-feature" data-category="Tatlılar"><strong>Kendi Yapımımız Sufle</strong><span>Dondurma ile servis edilir.</span></button>
+          <button type="button" class="menu-feature" data-category="Kahveler"><strong>Dünya Kahvelerinden Seçtiklerimiz</strong><span>Flat White, Affogato ve Crème Brûlée Latte.</span></button>
+        </div>
+      </div>
+      <div class="menu-tabs" id="menuTabs" role="group" aria-label="Menü kategorileri"></div>
+      <div id="menuGrid" role="region" aria-label="Menü ürünleri"></div>
+      <p class="menu-allergy">Alerjiniz varsa lütfen sipariş verirken ekibimize bilgi verin.</p>
+    </div>
+  </section>
+
+  <section class="gallery opaque" id="galeri">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Galeri</span>
+        <h2>Mekândan Kareler</h2>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <a class="gallery-tile" href="assets/galeri/galata-kule.jpeg" style="--photo-light:1.01;--photo-contrast:1.04;--photo-position:50% 45%">
+          <img src="assets/galeri/galata-kule-thumb.jpeg" alt="Kafenin içindeki ahşap Galata Kulesi maketi" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-2.jpeg" style="--photo-light:1.03;--photo-contrast:0.99;--photo-position:50% 49%">
+          <img src="assets/galeri/galata-2-thumb.jpeg" alt="Kafenin tabelası ve renkli girişi" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-4.jpeg" style="--photo-light:1.01;--photo-contrast:0.99;--photo-position:50% 48%">
+          <img src="assets/galeri/galata-4-thumb.jpeg" alt="Eski televizyonlar ve Yeşilçam kareleri" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-3.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 67%">
+          <img src="assets/galeri/galata-3-thumb.jpeg" alt="Kafenin masaları ve renkli lambaları" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-5.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 53%">
+          <img src="assets/galeri/galata-5-thumb.jpeg" alt="Kitaplık, plak ve duvardaki portreler" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-7.jpeg" style="--photo-light:1;--photo-contrast:0.98;--photo-position:50% 59%">
+          <img src="assets/galeri/galata-7-thumb.jpeg" alt="Renkli Yeşilçam köşesi ve gramofon" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-1.jpeg" style="--photo-light:1.04;--photo-contrast:0.98;--photo-position:50% 61%">
+          <img src="assets/galeri/galata-1-thumb.jpeg" alt="Kötekli Galata Cafe’nin sokaktan görünüşü" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-8.jpeg" style="--photo-light:1.03;--photo-contrast:0.99;--photo-position:50% 53%">
+          <img src="assets/galeri/galata-8-thumb.jpeg" alt="Ahşap raflardaki eski radyolar" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-6.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 63%">
+          <img src="assets/galeri/galata-6-thumb.jpeg" alt="Antikalarla dolu raflar ve ahşap masa" loading="lazy" decoding="async">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google yorumları -->
+  <section class="reviews opaque" id="yorumlar">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Yorumlar</span>
+        <h2>Kötekli Galata Cafe'yi Ziyaret Edenler Ne Diyor?</h2>
+        <p>Seçili olumlu yorum özetlerini kaydırarak okuyabilir, tüm değerlendirmeleri Google Haritalar’da görebilirsiniz.</p>
+      </div>
+
+      <div class="review-summary">
+        <div class="rating-card">
+          <h3 class="rating-title">Google Haritalar</h3>
+          <p class="rating-note">İşletmenin güncel puanını, değerlendirme sayısını ve tüm yorumlarını Google Haritalar’da görebilirsiniz.</p>
+          <a class="btn" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer">Güncel Puanı ve Yorumları Gör</a>
+        </div>
+
+        <div class="review-carousel">
+          <div class="review-carousel-head">
+            <h3 id="googleReviewsTitle">Olumlu yorumlardan seçkiler</h3>
+            <div class="review-controls">
+              <button type="button" aria-controls="googleReviews" aria-label="Önceki yorum" id="reviewPrev">←</button>
+              <button type="button" aria-controls="googleReviews" aria-label="Sonraki yorum" id="reviewNext">→</button>
+            </div>
+          </div>
+          <div class="review-strip" id="googleReviews" role="region" aria-labelledby="googleReviewsTitle" tabindex="0">
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Rustik dekor ve serin bir ortam</h3>
+              <p>Ziyaretçi, antikalarla dolu dekoru, serinletici sistemi ve güler yüzlü ekibi beğenmiş.</p>
+              <div class="review-date">1 Haziran 2025</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Nostaljik müzik ve lezzetli yemekler</h3>
+              <p>Ziyaretçi, nostaljik pop müziği ve yemekleri beğenmiş. Ekibin yaklaşımını olumlu, fiyatları da kaliteye göre makul bulmuş.</p>
+              <div class="review-date">21 Temmuz 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Çılgın Tost ve çay</h3>
+              <p>Ziyaretçi, Çılgın Tost’u lezzetli bulmuş. Kafenin temizliğini, sıcak ortamını ve ekibin ilgisini de beğenmiş.</p>
+              <div class="review-date">18 Temmuz 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Çeşitli menü ve ilgili ekip</h3>
+              <p>Ziyaretçi, atmosferi, çalışanların ilgisini ve menünün çeşitliliğini beğenmiş. Fiyatları ortalamanın biraz üstünde bulmuş.</p>
+              <div class="review-date">21 Mayıs 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Yeşilçam dekoru</h3>
+              <p>Ziyaretçi, Yeşilçam esintili dekoru ve mekânın sıcak havasını beğenmiş.</p>
+              <div class="review-date">4 Ağustos 2022</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Özenli dekor ve hızlı servis</h3>
+              <p>Ziyaretçi, özgün duvar dekorunu, ferah ortamı, hızlı servisi ve yemekleri beğenmiş.</p>
+              <div class="review-date">12 Temmuz 2021</div>
+            </article>
+          </div>
+          <p class="review-help">Bu kartlar seçili değerlendirmelerin kısa özetleridir. <a href="https://restoranim.net/mugla/mentese/kafe/galata-cafe-kotekli" target="_blank" rel="noopener noreferrer">Özetlerin kaynağı</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why opaque">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Neden Biz</span>
+        <h2>Kötekli Galata Cafe Farkı</h2>
+        <p>Kötekli Galata Cafe'yi farklı kılan; nostaljik atmosferi, kahvaltıdan dünya mutfağına uzanan zengin menüsü, kahve çeşitleri ve öğrenci dostu yaklaşımıdır. Lezzeti, samimiyeti ve geçmişin izlerini taşıyan dekorasyonu bir araya getirerek misafirlerine sıradan bir kafe deneyiminden fazlasını sunmayı amaçlar.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 9h13a3 3 0 0 1 0 6h-1"/><path d="M4 9v7a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9"/><path d="M7 5c0 1-1 1-1 2M11 5c0 1-1 1-1 2"/></svg>
+          <h3>Kaliteli Kahve</h3>
+          <p>Özenle hazırlanan kahvelerle keyifli bir mola deneyimi.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>
+          <h3>Sakin Atmosfer</h3>
+          <p>Arkadaşlarınızla vakit geçirmek için rahat, özenli bir ortam.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+          <h3>Kötekli'de Merkezi Konum</h3>
+          <p>Kolay ulaşılabilir, günlük rotanıza kolayca eklenebilecek bir konum.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="10" cy="7" r="3.2"/><path d="M21 20v-1a4 4 0 0 0-3-3.9"/><path d="M15.5 3.3a3.2 3.2 0 0 1 0 6.2"/></svg>
+          <h3>Keyifli Buluşmalar</h3>
+          <p>Arkadaşlar, öğrenciler ve kahve severler için bir buluşma noktası.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="insta-cta opaque">
+    <div class="container insta-inner">
+      <h2>Kötekli Galata Cafe'den Daha Fazlasını Keşfet</h2>
+      <p>Günlük atmosferimizi ve yeni lezzetleri Instagram'da keşfedin.</p>
+      <a id="instaBtn" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer" class="btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        Instagram'da Gör
+      </a>
+      <p class="insta-handle" id="instaHandleNote">@galatacafekotekli</p>
+    </div>
+  </section>
+
+  <section class="contact opaque" id="iletisim">
+    <div class="container contact-grid">
+      <div class="contact-info">
+        <h2>Bir Kahve Molası İçin Bekliyoruz.</h2>
+        <div class="info-list">
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+            <div><div class="info-label">Adres</div><div class="info-value" id="addressValue">Kötekli Mahallesi, 263. Sokak No: 22/A, Menteşe / Muğla</div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 2c1 3 3 5 6 6l2-2 5 2v2c0 1-1 2-2 2C10 20 4 14 4 5z"/></svg>
+            <div><div class="info-label">Telefon</div><div class="info-value"><a id="phoneValue" href="tel:+902522238505">0252 223 85 05</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <div><div class="info-label">Çalışma Saatleri</div><div class="info-value" id="hoursValue">Her gün 08.00–04.00</div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <div><div class="info-label">Instagram</div><div class="info-value"><a id="instaValue" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer">@galatacafekotekli</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+            <div><div class="info-label">E-posta</div><div class="info-value"><a href="mailto:galatacafekotekli@gmail.com">galatacafekotekli@gmail.com</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <div><div class="info-label">Mutfak Kapanışı</div><div class="info-value">03.30</div></div>
+          </div>
+        </div>
+        <div class="contact-actions">
+          <a href="tel:+902522238505" class="btn ghost">Hemen Ara</a>
+          <a id="waContactBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa">WhatsApp'tan Yaz</a>
+          <a id="mapsContactBtn" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer" class="btn ghost">Yol Tarifi Al</a>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe title="Kötekli Galata Cafe Google Maps konumu" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3179.348297800725!2d28.3807798!3d37.1681929!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bf73cd8c4139e1%3A0x35b40cd6de7dddb5!2sGalata%20Cafe%20K%C3%B6tekli!5e0!3m2!1str!2str!4v1794234262429!5m2!1str!2str" width="600" height="450" style="border:0" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <a id="mapsLink" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer">Google Maps’te Aç</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer opaque page">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo"><span class="mark">G</span>Kötekli Galata Cafe</a>
+        <p>Kötekli'nin buluşma noktası — sadece bir kahve değil, dikkatle kurulmuş bir an.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Hızlı Bağlantılar</h4>
+        <ul>
+          <li><a href="#hakkimizda">Hakkımızda</a></li>
+          <li><a href="#menu">Menü</a></li>
+          <li><a href="#galeri">Galeri</a></li>
+          <li><a href="#iletisim">İletişim</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>İletişim</h4>
+        <ul>
+          <li id="footerAddress">Kötekli Mahallesi, 263. Sokak No: 22/A, Menteşe / Muğla</li>
+          <li><a href="tel:+902522238505">0252 223 85 05</a></li>
+          <li><a href="mailto:galatacafekotekli@gmail.com">galatacafekotekli@gmail.com</a></li>
+          <li><a id="footerWaLink" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+          <li><a id="footerInstaLink" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="copyrightLine">© 2026 Kötekli Galata Cafe. Tüm hakları saklıdır.</span>
+      <span>Kötekli / Muğla</span>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Galeri fotoğrafı">
+  <div class="lightbox-box">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <img class="lightbox-photo" id="lightboxPhoto" alt="">
+    <button type="button" class="lightbox-arrow lightbox-prev" id="lightbox-prev" aria-label="Önceki fotoğraf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+    <button type="button" class="lightbox-arrow lightbox-next" id="lightbox-next" aria-label="Sonraki fotoğraf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  </div>
+</dialog>
+
+<script>{{SITE_JS}}</script>
+</body>
+</html>

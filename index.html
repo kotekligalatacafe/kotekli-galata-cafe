@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ntn+iLw1gf0ahzjBl6ckhUP/YxdAXfui+kPTOVztkwE=' https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.google.com/maps/embed; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kötekli Galata Cafe | Mayıs 2017’den Beri</title>
+<meta name="description" content="Kötekli Galata Cafe, Muğla Kötekli’de Mayıs 2017’den beri zengin mutfağı, kahve çeşitleri, nostaljik atmosferi ve öğrenci dostu fiyatlarıyla buluşma noktanız.">
+<meta property="og:title" content="Kötekli Galata Cafe | Mayıs 2017’den Beri">
+<meta property="og:description" content="Kötekli Galata Cafe, Muğla Kötekli’de Mayıs 2017’den beri zengin mutfağı, kahve çeşitleri, nostaljik atmosferi ve öğrenci dostu fiyatlarıyla buluşma noktanız.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   GALATA CAFFE — Premium / 3D konsept, tam site
+   İşletme ve menü bilgilerini değiştirmek için sayfanın en
+   altındaki <script> içinde BUSINESS ve MENU nesnelerini düzenleyin.
+   ========================================================= */
+:root{
+  --bg:#0a0806;
+  --bg-alt:#0f0c09;
+  --surface:#151109;
+  --surface-line:rgba(201,163,92,0.16);
+  --gold:#c9a35c;
+  --gold-soft:#e6c98a;
+  --gold-dim:rgba(201,163,92,0.55);
+  --ink:#efe7d8;
+  --ink-dim:rgba(239,231,216,0.58);
+  --ink-faint:rgba(239,231,216,0.32);
+  --line:rgba(201,163,92,0.2);
+  --font-display:'Fraunces', serif;
+  --font-body:'Plus Jakarta Sans', sans-serif;
+  --ease:cubic-bezier(.22,.68,0,1);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; scroll-padding-top:80px; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+}
+html,body{ background:var(--bg); }
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-weight:300;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3,p{ margin:0; }
+h1,h2,h3{ font-family:var(--font-display); font-weight:300; }
+:focus-visible{ outline:1px solid var(--gold); outline-offset:4px; }
+
+.container{ width:100%; max-width:1200px; margin:0 auto; padding:0 5vw; }
+
+/* ---------- persistent 3D backdrop ---------- */
+#scene-canvas[hidden]{ display:none; }
+#scene-canvas{ position:fixed; inset:0; z-index:0; display:block; }
+.grain{
+  position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.vignette{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 35%, rgba(10,8,6,0.82) 100%);
+}
+
+/* content sits above the canvas with its own background where needed */
+.page{ position:relative; z-index:10; }
+.opaque{ background:var(--bg); }
+
+/* ---------- NAV ---------- */
+nav.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 5vw;
+  background:rgba(10,8,6,0.3);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--line);
+  transition:padding .4s var(--ease), background-color .4s var(--ease);
+}
+nav.site-nav.scrolled{ padding:16px 5vw; background:rgba(10,8,6,0.65); }
+.logo{ font-family:var(--font-display); font-size:1.1rem; letter-spacing:0.05em; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.logo .mark{ width:30px; height:30px; border:1px solid var(--gold); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.85rem; color:var(--gold-soft); }
+.nav-links{ display:flex; gap:38px; }
+.nav-links a{ font-size:0.78rem; letter-spacing:0.05em; color:var(--ink-dim); transition:color .4s ease; position:relative; }
+.nav-links a::after{ content:""; position:absolute; left:0; right:100%; bottom:-6px; height:1px; background:var(--gold); transition:right .4s var(--ease); }
+.nav-links a:hover{ color:var(--gold-soft); }
+.nav-links a:hover::after{ right:0; }
+.nav-actions{ display:flex; align-items:center; gap:16px; }
+@media (max-width:900px){ .nav-links{ display:none; } .nav-actions .btn{ display:none; } }
+
+.hamburger{
+  display:none; width:40px; height:40px; border:1px solid var(--line); border-radius:50%;
+  background:transparent; color:var(--ink); align-items:center; justify-content:center;
+}
+.hamburger svg{ width:16px; height:16px; }
+@media (max-width:900px){ .hamburger{ display:inline-flex; } }
+
+.mobile-nav{
+  position:fixed; inset:0; z-index:99; background:rgba(10,8,6,0.98);
+  display:flex; flex-direction:column; justify-content:center; padding:32px;
+  transform:translateY(-100%); transition:transform .5s var(--ease); overflow-y:auto;
+}
+.mobile-nav.open{ transform:translateY(0); }
+@media(max-height:640px){ .mobile-nav{justify-content:flex-start;padding-top:72px;} .mobile-nav a{font-size:1.35rem;padding:8px 0;} .mobile-nav .mobile-actions{margin-top:14px;} }
+.mobile-nav ul{ display:flex; flex-direction:column; gap:4px; }
+.mobile-nav a{ font-family:var(--font-display); font-weight:300; font-size:2rem; padding:14px 0; border-bottom:1px solid var(--line); color:var(--ink); }
+.mobile-nav .mobile-actions{ margin-top:28px; display:flex; flex-direction:column; gap:12px; }
+.mobile-close{ position:absolute; top:22px; right:24px; width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--ink); display:flex; align-items:center; justify-content:center; }
+.mobile-close svg{ width:16px; height:16px; }
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  position:relative; display:inline-flex; align-items:center; gap:10px;
+  padding:15px 32px; font-size:0.78rem; letter-spacing:0.06em;
+  border:1px solid var(--line); background:transparent; color:var(--ink);
+  border-radius:1px; overflow:hidden; transition:border-color .5s ease, color .5s ease;
+  white-space:nowrap;
+}
+.btn::before{ content:""; position:absolute; inset:0; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--ease); z-index:-1; }
+.btn:hover{ color:#0a0806; border-color:var(--gold); }
+.btn:hover::before{ transform:scaleX(1); }
+.btn.ghost{ opacity:0.8; }
+.btn.wa{ border-color:rgba(140,180,150,0.35); }
+.btn.wa::before{ background:#7fa98a; }
+.btn svg{ width:16px; height:16px; }
+
+/* ---------- HERO ---------- */
+.hero{
+  min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:120px 24px 60px;
+}
+.hero .eyebrow{ font-family:var(--font-display); font-style:italic; font-weight:300; font-size:1rem; color:var(--gold-soft); opacity:0; animation:riseIn 1.2s var(--ease) .3s forwards; }
+.hero h1{ font-size:clamp(3.2rem, 2.2rem + 6vw, 8rem); line-height:0.95; margin-top:16px;
+  background:linear-gradient(180deg, var(--ink) 0%, var(--gold-soft) 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+  opacity:0; animation:riseIn 1.3s var(--ease) .5s forwards; }
+.hero .sub{ margin-top:24px; font-size:clamp(0.95rem, 0.85rem + 0.3vw, 1.1rem); color:var(--ink-dim); max-width:38ch; line-height:1.7;
+  opacity:0; animation:riseIn 1.3s var(--ease) .75s forwards; }
+.hero-cta{ margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; opacity:0; animation:riseIn 1.3s var(--ease) .95s forwards; }
+@keyframes riseIn{ from{ opacity:0; transform:translateY(20px); filter:blur(4px); } to{ opacity:1; transform:translateY(0); filter:blur(0); } }
+.scroll-hint{ margin-top:70px; display:flex; flex-direction:column; align-items:center; gap:10px; opacity:0; animation:riseIn 1.3s ease 1.2s forwards; }
+.scroll-hint .line{ width:1px; height:36px; background:linear-gradient(180deg, var(--gold) 0%, transparent 100%); animation:pulseLine 2.4s ease-in-out infinite; }
+@keyframes pulseLine{ 0%,100%{ opacity:0.25; } 50%{ opacity:1; } }
+.scroll-hint span{ font-size:0.64rem; letter-spacing:0.14em; color:var(--ink-faint); }
+
+/* ---------- STATEMENT / INTRO ---------- */
+.statement{ padding:140px 24px; display:flex; justify-content:center; }
+.statement-inner{ max-width:26ch; text-align:center; }
+.statement-inner p.lead{ font-size:clamp(1.6rem, 1.2rem + 2vw, 2.9rem); line-height:1.35; color:var(--ink); }
+.statement-inner p.lead em{ color:var(--gold-soft); font-style:italic; }
+.statement-inner p.small{ margin-top:28px; font-size:0.95rem; color:var(--ink-dim); line-height:1.85; max-width:52ch; margin-left:auto; margin-right:auto; }
+
+/* ---------- SECTION HEAD ---------- */
+.section-head{ max-width:40ch; margin-bottom:56px; }
+.section-head .kicker{ font-family:var(--font-display); font-style:italic; color:var(--gold-soft); font-size:0.95rem; margin-bottom:12px; display:block; }
+.section-head h2{ font-size:clamp(1.9rem, 1.5rem + 1.8vw, 3rem); line-height:1.1; color:var(--ink); }
+.section-head p{ margin-top:16px; color:var(--ink-dim); font-size:0.98rem; max-width:46ch; }
+.section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+
+/* ---------- MENU ---------- */
+.menu{ padding:130px 0; border-top:1px solid var(--line); }
+.menu-top{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px; }
+.menu-tabs{ display:flex; flex-wrap:wrap; gap:6px 0; margin:44px 0 46px; border-bottom:1px solid var(--line); }
+.menu-tab{ background:transparent; border:none; color:var(--ink-dim); padding:12px 0; margin-right:30px; font-size:0.85rem; letter-spacing:0.03em; position:relative; transition:color .3s ease; }
+.menu-tab::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .4s var(--ease); }
+.menu-tab:hover{ color:var(--ink); }
+.menu-tab[aria-pressed="true"]{ color:var(--gold-soft); }
+.menu-tab[aria-pressed="true"]::after{ transform:scaleX(1); }
+.menu-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:0 60px; }
+.menu-item{ display:flex; justify-content:space-between; gap:20px; padding:22px 0; border-bottom:1px solid var(--line); }
+.menu-item .mi-name{ font-family:var(--font-display); font-weight:400; font-size:1.08rem; color:var(--ink); }
+.menu-item .mi-desc{ margin-top:6px; font-size:0.85rem; color:var(--ink-faint); max-width:32ch; line-height:1.6; }
+@media (max-width:760px){ .menu-grid{ grid-template-columns:1fr; } .menu-top{ flex-direction:column; align-items:flex-start; } }
+
+.menu-qr-link{ margin-top:20px; }
+.menu-featured{ margin-top:36px; }
+.menu-featured h3,.menu-group h3{ color:var(--gold-soft); font-size:1.5rem; }
+.menu-feature-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:12px; margin-top:14px; }
+.menu-feature{ display:grid; gap:7px; padding:16px; color:var(--ink); background:var(--surface); border:1px solid var(--line); text-align:left; }
+.menu-feature:hover{ border-color:var(--gold-soft); }
+.menu-feature strong{ font-family:var(--font-display); font-size:1.05rem; font-weight:400; }
+.menu-feature span,.menu-group-note,.menu-allergy{ color:var(--ink-dim); font-size:.86rem; }
+.menu-group + .menu-group,.menu-allergy{ margin-top:30px; }
+.menu-group-note{ margin-top:6px; }
+.menu-item .mi-desc{ max-width:54ch; }
+
+
+/* ---------- GALLERY ---------- */
+.gallery{ padding:130px 0; border-top:1px solid var(--line); }
+.gallery-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-auto-rows:clamp(145px,21vw,245px); gap:10px; }
+.gallery-tile{ display:block; min-width:0; overflow:hidden; border-radius:3px; background:var(--surface); }
+.gallery-tile:first-child{ grid-column:span 2; grid-row:span 2; }
+.gallery-tile img,.lightbox-photo{ filter:brightness(var(--photo-light,1)) contrast(var(--photo-contrast,1)); }
+.gallery-tile img{ width:100%; height:100%; object-fit:cover; object-position:var(--photo-position,center); transition:transform .5s var(--ease); }
+.gallery-tile:hover img{ transform:scale(1.035); }
+@media(max-width:720px){
+  .gallery{ padding:84px 0; }
+  .gallery-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:clamp(125px,56vw,340px); gap:7px; }
+  .gallery-tile:first-child{ grid-row:span 1; }
+}
+.lightbox{ max-width:calc(100% - 28px); max-height:calc(100% - 28px); padding:48px 10px 10px; margin:auto; border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+.lightbox::backdrop{ background:rgba(6,4,2,.93); }
+.lightbox-box{ position:relative; }
+.lightbox-photo{ display:block; max-width:min(88vw,960px); max-height:calc(100dvh - 90px); width:auto; height:auto; object-fit:contain; }
+.lightbox-close{ position:absolute; top:-42px; right:0; width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--ink); display:grid; place-items:center; }
+.lightbox-close svg{ width:15px; height:15px; }
+
+.lightbox-arrow{ position:absolute; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:44px; height:44px; border:1px solid rgba(255,255,255,.45); border-radius:50%; background:rgba(10,8,6,.78); color:white; }
+.lightbox-arrow:hover{ background:var(--bg); border-color:var(--gold-soft); }
+.lightbox-arrow svg{ width:22px; height:22px; }
+.lightbox-prev{ left:8px; }
+.lightbox-next{ right:8px; }
+
+
+/* ---------- WHY US ---------- */
+.why{ padding:130px 0; border-top:1px solid var(--line); }
+.why-grid{ display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); }
+.why-item{ padding:38px 30px 38px 0; border-right:1px solid var(--line); }
+.why-item:last-child{ border-right:none; }
+.why-item .wi-icon{ width:26px; height:26px; color:var(--gold); margin-bottom:22px; }
+.why-item h3{ font-size:1.08rem; font-weight:400; color:var(--ink); margin-bottom:10px; }
+.why-item p{ font-size:0.88rem; color:var(--ink-faint); line-height:1.7; }
+@media (max-width:900px){ .why-grid{ grid-template-columns:1fr 1fr; } .why-item{ border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:30px 20px; } .why-item:nth-child(2n){ border-right:none; } }
+@media (max-width:520px){ .why-grid{ grid-template-columns:1fr; } .why-item{ border-right:none !important; } }
+
+/* ---------- INSTAGRAM ---------- */
+.insta-cta{ padding:120px 0; text-align:center; border-top:1px solid var(--line); }
+.insta-inner{ max-width:44ch; margin:0 auto; }
+.insta-inner h2{ font-size:clamp(1.9rem, 1.5rem + 1.6vw, 2.7rem); color:var(--ink); line-height:1.15; }
+.insta-inner p{ margin-top:16px; color:var(--ink-dim); font-size:0.98rem; }
+.insta-inner .btn{ margin-top:32px; }
+.insta-handle{ margin-top:16px; font-size:0.78rem; color:var(--ink-faint); }
+
+/* ---------- CONTACT ---------- */
+.contact{ padding:130px 0; border-top:1px solid var(--line); }
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.contact-info h2{ font-size:clamp(2rem, 1.6rem + 1.8vw, 2.9rem); color:var(--ink); line-height:1.1; margin-bottom:38px; }
+.info-list{ display:flex; flex-direction:column; gap:24px; }
+.info-row{ display:flex; gap:16px; align-items:flex-start; border-bottom:1px solid var(--line); padding-bottom:20px; }
+.info-row svg{ width:18px; height:18px; color:var(--gold); flex:0 0 auto; margin-top:3px; }
+.info-label{ font-size:0.72rem; letter-spacing:0.05em; color:var(--ink-faint); }
+.info-value{ font-size:0.98rem; color:var(--ink); margin-top:4px; }
+.info-value.placeholder{ color:var(--ink-faint); font-style:italic; }
+.contact-actions{ display:flex; gap:14px; flex-wrap:wrap; margin-top:38px; }
+.map-frame{ aspect-ratio:4/3.4; border:1px solid var(--line); border-radius:1px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px; text-align:center; padding:32px;
+  background:radial-gradient(circle at 30% 20%, #1c1610, #0a0806); }
+.map-frame svg{ width:30px; height:30px; color:var(--gold); }
+.map-frame p{ color:var(--ink-faint); font-size:0.88rem; max-width:28ch; }
+.map-frame a{ font-size:0.85rem; color:var(--gold-soft); border-bottom:1px solid var(--gold-dim); padding-bottom:2px; }
+@media (max-width:860px){ .contact-grid{ grid-template-columns:1fr; gap:54px; } }
+
+/* ---------- FOOTER ---------- */
+footer.site-footer{ padding:70px 0 36px; border-top:1px solid var(--line); }
+.footer-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:44px; padding-bottom:48px; }
+.footer-brand .logo{ margin-bottom:16px; }
+.footer-brand p{ color:var(--ink-faint); font-size:0.9rem; max-width:32ch; line-height:1.75; }
+.footer-col h4{ font-family:var(--font-body); font-weight:500; font-size:0.78rem; letter-spacing:0.04em; color:var(--ink); margin-bottom:18px; }
+.footer-col ul{ display:flex; flex-direction:column; gap:11px; }
+.footer-col a,.footer-col li{ color:var(--ink-faint); font-size:0.9rem; }
+.footer-col a{ transition:color .3s ease; }
+.footer-col a:hover{ color:var(--gold-soft); }
+.footer-bottom{ padding-top:26px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:0.75rem; letter-spacing:0.03em; color:var(--ink-faint); }
+@media (max-width:720px){ .footer-top{ grid-template-columns:1fr; gap:34px; } }
+/* ---------- GOOGLE / VISITOR REVIEWS ---------- */
+.reviews{padding:130px 0;border-top:1px solid var(--line);}
+.review-summary{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:40px;align-items:start;margin-bottom:52px;}
+.rating-card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(201,163,92,.08),rgba(10,8,6,.2));padding:34px;}
+.rating-title{font-size:1.7rem;color:var(--gold-soft);margin-bottom:12px;}
+.stars{color:var(--gold);letter-spacing:.14em;font-size:1rem;margin:12px 0;}
+.rating-note{font-size:.78rem;color:var(--ink-faint);line-height:1.7;}
+.review-card{padding:24px;border:1px solid var(--line);background:rgba(21,17,9,.66);}
+.review-source{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:.68rem;letter-spacing:.08em;color:var(--gold-soft);text-transform:uppercase;}
+.review-card h3{font-size:1rem;font-weight:400;margin-top:13px;}
+.review-card p{margin-top:10px;font-size:.87rem;color:var(--ink-dim);line-height:1.75;}
+.review-date{font-size:.66rem;color:var(--ink-faint);margin-top:16px;}
+.review-carousel{min-width:0;}
+.review-carousel-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.review-carousel-head h3{font-size:1.4rem;}
+.review-controls{display:flex;gap:8px;}
+.review-controls button{width:44px;height:44px;background:var(--surface);color:var(--gold-soft);border:1px solid var(--line);border-radius:50%;font-size:1.2rem;}
+.review-strip{display:grid;grid-auto-flow:column;grid-auto-columns:min(84%,310px);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-color:var(--gold-dim) var(--surface);}
+.review-strip .review-card{scroll-snap-align:start;min-width:0;}
+.review-carousel .review-help a{text-decoration:underline;}
+.rating-card .btn{margin-top:18px;}
+.review-help{margin-top:10px;font-size:.7rem;color:var(--ink-faint);}
+@media(max-width:860px){.review-summary{grid-template-columns:1fr;gap:35px}}
+
+
+/* 1. aşama: işletme metinleri için okunabilir ve uyumlu yerleşim */
+#hakkimizda .statement-inner{width:100%;max-width:760px;}
+#hakkimizda .kicker{display:block;color:var(--gold-soft);margin-bottom:16px;}
+#hakkimizda h2{font-size:clamp(1.9rem,1.5rem + 1.8vw,3rem);line-height:1.2;}
+#hakkimizda h3{font-size:1.5rem;margin-top:40px;color:var(--gold-soft);}
+#hakkimizda .small{max-width:68ch;margin-top:20px;}
+.why .section-head{max-width:760px;}
+.why .section-head p{max-width:68ch;}
+.menu-top .section-head{width:min(100%,640px);min-width:0;}
+.logo .mark{flex-shrink:0;}
+@media(min-width:901px) and (max-width:1100px){.nav-links{gap:18px;}nav.site-nav{padding-left:3vw;padding-right:3vw;}}
+@media(max-width:380px){.site-nav .logo{font-size:.95rem;gap:7px;letter-spacing:.02em;}.nav-actions{gap:8px;}}
+/* İletişim alanı: harita ve uzun e-posta için esnek yerleşim */
+.contact-grid>*{min-width:0;}.info-row>div{min-width:0;}.info-value,.footer-col li{overflow-wrap:anywhere;}
+.map-frame{padding:0;overflow:hidden;gap:0;align-self:start;}
+.map-frame iframe{display:block;width:100%;height:100%;min-height:320px;flex:1;border:0;}
+.map-frame a{display:block;padding:12px 16px;border-bottom:0;}
+@media(max-width:480px){.map-frame{aspect-ratio:auto;}.map-frame iframe{height:340px;flex:none;min-height:0;}}
+
+/* Ekran genişliğine ve yüksekliğine göre yerleşim */
+.menu-tab{min-height:44px;}
+.map-frame{aspect-ratio:auto;}
+.map-frame iframe{height:clamp(300px,38vw,420px);min-height:0;flex:none;}
+@media(max-width:900px){
+  .menu,.gallery,.reviews,.why,.insta-cta,.contact{padding-block:clamp(56px,10vw,88px);}
+  .section-head{margin-bottom:30px;}
+  .hero{padding:105px 20px 48px;}
+  .hero h1{font-size:clamp(2.45rem,8.4vw,4.5rem);line-height:1.04;}
+  .hero-cta{margin-top:28px;}
+  .scroll-hint{margin-top:38px;}
+  .review-summary,.contact-grid{gap:28px;}
+}
+@media(max-width:480px){
+  .btn{min-height:44px;max-width:100%;padding:12px 16px;white-space:normal;text-align:center;justify-content:center;}
+  .menu-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:28px 0;}
+  .menu-tab{margin:0;padding:8px 6px;text-align:left;overflow-wrap:anywhere;}
+  .menu-feature-grid{grid-template-columns:1fr;}
+  .rating-card,.review-card{padding:18px;}
+  .review-strip{grid-auto-columns:88%;}
+  .contact-actions{gap:8px;margin-top:24px;}
+  .map-frame iframe{height:300px;}
+}
+@media(max-height:540px) and (orientation:landscape){
+  .hero{padding-top:94px;padding-bottom:28px;}
+  .scroll-hint{display:none;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="scene-canvas"></canvas>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<nav class="site-nav" id="siteNav">
+  <a href="#top" class="logo"><span class="mark">G</span>Kötekli Galata Cafe</a>
+  <ul class="nav-links">
+    <li><a href="#hakkimizda">Hakkımızda</a></li>
+    <li><a href="#menu">Menü</a></li>
+    <li><a href="#galeri">Galeri</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a id="waNavBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa">WhatsApp</a>
+  </div>
+  <button class="hamburger" id="menuOpenBtn" aria-controls="mobileNav" aria-label="Menüyü aç" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav" inert>
+  <button class="mobile-close" id="menuCloseBtn" aria-label="Menüyü kapat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+  </button>
+  <ul>
+    <li><a href="#top" class="mnav-link">Ana Sayfa</a></li>
+    <li><a href="#hakkimizda" class="mnav-link">Hakkımızda</a></li>
+    <li><a href="#menu" class="mnav-link">Menü</a></li>
+    <li><a href="#galeri" class="mnav-link">Galeri</a></li>
+    <li><a href="#iletisim" class="mnav-link">İletişim</a></li>
+  </ul>
+  <div class="mobile-actions">
+    <a id="waMobileBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa mnav-link">WhatsApp'tan Yaz</a>
+    <a href="#iletisim" class="btn ghost mnav-link">Yol Tarifi Al</a>
+  </div>
+</div>
+
+<main id="top" class="page">
+
+  <section class="hero">
+    <p class="eyebrow">Kötekli, Muğla</p>
+    <h1>Kötekli Galata Cafe</h1>
+    <p class="sub">Sadece bir kahve değil — dikkatle kurulmuş bir an. Zanaat, ışık ve sessizlik üzerine.</p>
+    <div class="hero-cta">
+      <a href="#menu" class="btn">Menüyü Keşfet</a>
+      <a href="#iletisim" class="btn ghost">Yol Tarifi Al</a>
+    </div>
+    <div class="scroll-hint"><div class="line"></div><span>KAYDIR</span></div>
+  </section>
+
+  <section class="statement" id="hakkimizda">
+    <div class="statement-inner">
+      <span class="kicker">Hakkımızda · Mayıs 2017</span>
+      <h2>Kötekli Galata Cafe</h2>
+      <p class="small">Kötekli Galata Cafe, zengin mutfağı, geniş içecek seçenekleri ve öğrenci dostu fiyat politikasıyla misafirlerine keyifli bir deneyim sunuyor. Standart kafe anlayışının ötesine geçen nostaljik tasarımı ve müşteri odaklı hizmet yaklaşımıyla, her ziyaretin özel bir anıya dönüşmesini hedefliyor.</p>
+      <h3>Hikâyemiz</h3>
+      <p class="small">Mayıs 2017'de Muğla'nın Kötekli bölgesinde kapılarını açan Kötekli Galata Cafe, öğrencilere ve tüm Muğla halkına kaliteli bir kafe deneyimi sunma amacıyla kuruldu. Kurucularının İstanbul'un tarihî Galata semtinden Muğla'ya taşıdığı yalnızca bir isim değil, aynı zamanda kaliteli hizmet anlayışıydı. Zamanla zenginleşen menüsü ve misafirleriyle kurduğu samimi bağ sayesinde işletme, Muğla'nın sevilen buluşma noktalarından biri haline geldi.</p>
+      <h3>Kuruluş Amacımız</h3>
+      <p class="small">Kötekli Galata Cafe, kaliteli lezzetleri ulaşılabilir fiyatlarla buluşturmak ve her misafirin kendini özel hissedeceği sıcak, samimi ve nostaljik bir buluşma noktası oluşturmak amacıyla kuruldu.</p>
+    </div>
+  </section>
+
+  <section class="menu opaque" id="menu">
+    <div class="container">
+      <div class="menu-top">
+        <div class="section-head" style="margin-bottom:0;">
+          <span class="kicker">Menü</span>
+          <h2>Kahvaltıdan Dünya Mutfağına, Kahve Keyfinden Uzun Sohbetlere…</h2>
+          <p>Kötekli Galata Cafe, zengin kahvaltı seçenekleri, dünya mutfağından lezzetler ve özenle hazırlanan kahve çeşitleriyle günün her anına eşlik ediyor.</p>
+          <a class="btn ghost menu-qr-link" href="https://qria.com.tr/galata-kafe" target="_blank" rel="noopener noreferrer" aria-label="Fiyatları QR Menüde Gör (yeni sekme)">Fiyatları QR Menüde Gör</a>
+        </div>
+      </div>
+      <div class="menu-featured">
+        <h3>Öne Çıkanlar</h3>
+        <div class="menu-feature-grid">
+          <button type="button" class="menu-feature" data-category="Kahvaltılar"><strong>Kahvaltılar</strong><span>Serpme Kahvaltı ve Galata Kahvaltı</span></button>
+          <button type="button" class="menu-feature" data-category="Tostlar ve Ekmek Üstü"><strong>Ekmek Üstü Lezzet No. 1</strong><span>Pizza sosu, kaşar, zeytin, salam, sosis ve mısır. Yanında patates kızartması.</span></button>
+          <button type="button" class="menu-feature" data-category="Ana Yemekler"><strong>Mantar Soslu Tavuk Schnitzel</strong><span>Makarna, patates kızartması ve iki sos ile servis edilir.</span></button>
+          <button type="button" class="menu-feature" data-category="Pizzalar"><strong>Galata Special Pizza</strong><span>No. 1 ve No. 2 seçenekleri.</span></button>
+          <button type="button" class="menu-feature" data-category="Tatlılar"><strong>Kendi Yapımımız Sufle</strong><span>Dondurma ile servis edilir.</span></button>
+          <button type="button" class="menu-feature" data-category="Kahveler"><strong>Dünya Kahvelerinden Seçtiklerimiz</strong><span>Flat White, Affogato ve Crème Brûlée Latte.</span></button>
+        </div>
+      </div>
+      <div class="menu-tabs" id="menuTabs" role="group" aria-label="Menü kategorileri"></div>
+      <div id="menuGrid" role="region" aria-label="Menü ürünleri"></div>
+      <p class="menu-allergy">Alerjiniz varsa lütfen sipariş verirken ekibimize bilgi verin.</p>
+    </div>
+  </section>
+
+  <section class="gallery opaque" id="galeri">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Galeri</span>
+        <h2>Mekândan Kareler</h2>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <a class="gallery-tile" href="assets/galeri/galata-kule.jpeg" style="--photo-light:1.01;--photo-contrast:1.04;--photo-position:50% 45%">
+          <img src="assets/galeri/galata-kule-thumb.jpeg" alt="Kafenin içindeki ahşap Galata Kulesi maketi" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-2.jpeg" style="--photo-light:1.03;--photo-contrast:0.99;--photo-position:50% 49%">
+          <img src="assets/galeri/galata-2-thumb.jpeg" alt="Kafenin tabelası ve renkli girişi" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-4.jpeg" style="--photo-light:1.01;--photo-contrast:0.99;--photo-position:50% 48%">
+          <img src="assets/galeri/galata-4-thumb.jpeg" alt="Eski televizyonlar ve Yeşilçam kareleri" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-3.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 67%">
+          <img src="assets/galeri/galata-3-thumb.jpeg" alt="Kafenin masaları ve renkli lambaları" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-5.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 53%">
+          <img src="assets/galeri/galata-5-thumb.jpeg" alt="Kitaplık, plak ve duvardaki portreler" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-7.jpeg" style="--photo-light:1;--photo-contrast:0.98;--photo-position:50% 59%">
+          <img src="assets/galeri/galata-7-thumb.jpeg" alt="Renkli Yeşilçam köşesi ve gramofon" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-1.jpeg" style="--photo-light:1.04;--photo-contrast:0.98;--photo-position:50% 61%">
+          <img src="assets/galeri/galata-1-thumb.jpeg" alt="Kötekli Galata Cafe’nin sokaktan görünüşü" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-8.jpeg" style="--photo-light:1.03;--photo-contrast:0.99;--photo-position:50% 53%">
+          <img src="assets/galeri/galata-8-thumb.jpeg" alt="Ahşap raflardaki eski radyolar" loading="lazy" decoding="async">
+        </a>
+        <a class="gallery-tile" href="assets/galeri/galata-6.jpeg" style="--photo-light:1.02;--photo-contrast:0.99;--photo-position:50% 63%">
+          <img src="assets/galeri/galata-6-thumb.jpeg" alt="Antikalarla dolu raflar ve ahşap masa" loading="lazy" decoding="async">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google yorumları -->
+  <section class="reviews opaque" id="yorumlar">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Yorumlar</span>
+        <h2>Kötekli Galata Cafe'yi Ziyaret Edenler Ne Diyor?</h2>
+        <p>Seçili olumlu yorum özetlerini kaydırarak okuyabilir, tüm değerlendirmeleri Google Haritalar’da görebilirsiniz.</p>
+      </div>
+
+      <div class="review-summary">
+        <div class="rating-card">
+          <h3 class="rating-title">Google Haritalar</h3>
+          <p class="rating-note">İşletmenin güncel puanını, değerlendirme sayısını ve tüm yorumlarını Google Haritalar’da görebilirsiniz.</p>
+          <a class="btn" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer">Güncel Puanı ve Yorumları Gör</a>
+        </div>
+
+        <div class="review-carousel">
+          <div class="review-carousel-head">
+            <h3 id="googleReviewsTitle">Olumlu yorumlardan seçkiler</h3>
+            <div class="review-controls">
+              <button type="button" aria-controls="googleReviews" aria-label="Önceki yorum" id="reviewPrev">←</button>
+              <button type="button" aria-controls="googleReviews" aria-label="Sonraki yorum" id="reviewNext">→</button>
+            </div>
+          </div>
+          <div class="review-strip" id="googleReviews" role="region" aria-labelledby="googleReviewsTitle" tabindex="0">
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Rustik dekor ve serin bir ortam</h3>
+              <p>Ziyaretçi, antikalarla dolu dekoru, serinletici sistemi ve güler yüzlü ekibi beğenmiş.</p>
+              <div class="review-date">1 Haziran 2025</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Nostaljik müzik ve lezzetli yemekler</h3>
+              <p>Ziyaretçi, nostaljik pop müziği ve yemekleri beğenmiş. Ekibin yaklaşımını olumlu, fiyatları da kaliteye göre makul bulmuş.</p>
+              <div class="review-date">21 Temmuz 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Çılgın Tost ve çay</h3>
+              <p>Ziyaretçi, Çılgın Tost’u lezzetli bulmuş. Kafenin temizliğini, sıcak ortamını ve ekibin ilgisini de beğenmiş.</p>
+              <div class="review-date">18 Temmuz 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Çeşitli menü ve ilgili ekip</h3>
+              <p>Ziyaretçi, atmosferi, çalışanların ilgisini ve menünün çeşitliliğini beğenmiş. Fiyatları ortalamanın biraz üstünde bulmuş.</p>
+              <div class="review-date">21 Mayıs 2023</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Yeşilçam dekoru</h3>
+              <p>Ziyaretçi, Yeşilçam esintili dekoru ve mekânın sıcak havasını beğenmiş.</p>
+              <div class="review-date">4 Ağustos 2022</div>
+            </article>
+            <article class="review-card">
+              <div class="review-source">Google yorumundan özet</div>
+              <h3>Özenli dekor ve hızlı servis</h3>
+              <p>Ziyaretçi, özgün duvar dekorunu, ferah ortamı, hızlı servisi ve yemekleri beğenmiş.</p>
+              <div class="review-date">12 Temmuz 2021</div>
+            </article>
+          </div>
+          <p class="review-help">Bu kartlar seçili değerlendirmelerin kısa özetleridir. <a href="https://restoranim.net/mugla/mentese/kafe/galata-cafe-kotekli" target="_blank" rel="noopener noreferrer">Özetlerin kaynağı</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why opaque">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Neden Biz</span>
+        <h2>Kötekli Galata Cafe Farkı</h2>
+        <p>Kötekli Galata Cafe'yi farklı kılan; nostaljik atmosferi, kahvaltıdan dünya mutfağına uzanan zengin menüsü, kahve çeşitleri ve öğrenci dostu yaklaşımıdır. Lezzeti, samimiyeti ve geçmişin izlerini taşıyan dekorasyonu bir araya getirerek misafirlerine sıradan bir kafe deneyiminden fazlasını sunmayı amaçlar.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 9h13a3 3 0 0 1 0 6h-1"/><path d="M4 9v7a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9"/><path d="M7 5c0 1-1 1-1 2M11 5c0 1-1 1-1 2"/></svg>
+          <h3>Kaliteli Kahve</h3>
+          <p>Özenle hazırlanan kahvelerle keyifli bir mola deneyimi.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>
+          <h3>Sakin Atmosfer</h3>
+          <p>Arkadaşlarınızla vakit geçirmek için rahat, özenli bir ortam.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+          <h3>Kötekli'de Merkezi Konum</h3>
+          <p>Kolay ulaşılabilir, günlük rotanıza kolayca eklenebilecek bir konum.</p>
+        </div>
+        <div class="why-item">
+          <svg class="wi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"/><circle cx="10" cy="7" r="3.2"/><path d="M21 20v-1a4 4 0 0 0-3-3.9"/><path d="M15.5 3.3a3.2 3.2 0 0 1 0 6.2"/></svg>
+          <h3>Keyifli Buluşmalar</h3>
+          <p>Arkadaşlar, öğrenciler ve kahve severler için bir buluşma noktası.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="insta-cta opaque">
+    <div class="container insta-inner">
+      <h2>Kötekli Galata Cafe'den Daha Fazlasını Keşfet</h2>
+      <p>Günlük atmosferimizi ve yeni lezzetleri Instagram'da keşfedin.</p>
+      <a id="instaBtn" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer" class="btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        Instagram'da Gör
+      </a>
+      <p class="insta-handle" id="instaHandleNote">@galatacafekotekli</p>
+    </div>
+  </section>
+
+  <section class="contact opaque" id="iletisim">
+    <div class="container contact-grid">
+      <div class="contact-info">
+        <h2>Bir Kahve Molası İçin Bekliyoruz.</h2>
+        <div class="info-list">
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+            <div><div class="info-label">Adres</div><div class="info-value" id="addressValue">Kötekli Mahallesi, 263. Sokak No: 22/A, Menteşe / Muğla</div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 2c1 3 3 5 6 6l2-2 5 2v2c0 1-1 2-2 2C10 20 4 14 4 5z"/></svg>
+            <div><div class="info-label">Telefon</div><div class="info-value"><a id="phoneValue" href="tel:+902522238505">0252 223 85 05</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <div><div class="info-label">Çalışma Saatleri</div><div class="info-value" id="hoursValue">Her gün 08.00–04.00</div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <div><div class="info-label">Instagram</div><div class="info-value"><a id="instaValue" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer">@galatacafekotekli</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+            <div><div class="info-label">E-posta</div><div class="info-value"><a href="mailto:galatacafekotekli@gmail.com">galatacafekotekli@gmail.com</a></div></div>
+          </div>
+          <div class="info-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <div><div class="info-label">Mutfak Kapanışı</div><div class="info-value">03.30</div></div>
+          </div>
+        </div>
+        <div class="contact-actions">
+          <a href="tel:+902522238505" class="btn ghost">Hemen Ara</a>
+          <a id="waContactBtn" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer" class="btn wa">WhatsApp'tan Yaz</a>
+          <a id="mapsContactBtn" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer" class="btn ghost">Yol Tarifi Al</a>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe title="Kötekli Galata Cafe Google Maps konumu" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3179.348297800725!2d28.3807798!3d37.1681929!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bf73cd8c4139e1%3A0x35b40cd6de7dddb5!2sGalata%20Cafe%20K%C3%B6tekli!5e0!3m2!1str!2str!4v1794234262429!5m2!1str!2str" width="600" height="450" style="border:0" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <a id="mapsLink" href="https://www.google.com/maps?cid=3869732096813424053" target="_blank" rel="noopener noreferrer">Google Maps’te Aç</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer opaque page">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo"><span class="mark">G</span>Kötekli Galata Cafe</a>
+        <p>Kötekli'nin buluşma noktası — sadece bir kahve değil, dikkatle kurulmuş bir an.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Hızlı Bağlantılar</h4>
+        <ul>
+          <li><a href="#hakkimizda">Hakkımızda</a></li>
+          <li><a href="#menu">Menü</a></li>
+          <li><a href="#galeri">Galeri</a></li>
+          <li><a href="#iletisim">İletişim</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>İletişim</h4>
+        <ul>
+          <li id="footerAddress">Kötekli Mahallesi, 263. Sokak No: 22/A, Menteşe / Muğla</li>
+          <li><a href="tel:+902522238505">0252 223 85 05</a></li>
+          <li><a href="mailto:galatacafekotekli@gmail.com">galatacafekotekli@gmail.com</a></li>
+          <li><a id="footerWaLink" href="https://wa.me/905374894968" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+          <li><a id="footerInstaLink" href="https://www.instagram.com/galatacafekotekli/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="copyrightLine">© 2026 Kötekli Galata Cafe. Tüm hakları saklıdır.</span>
+      <span>Kötekli / Muğla</span>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Galeri fotoğrafı">
+  <div class="lightbox-box">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <img class="lightbox-photo" id="lightboxPhoto" alt="">
+    <button type="button" class="lightbox-arrow lightbox-prev" id="lightbox-prev" aria-label="Önceki fotoğraf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+    <button type="button" class="lightbox-arrow lightbox-next" id="lightbox-next" aria-label="Sonraki fotoğraf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     BUSINESS — İşletme bilgilerini burada güncelleyin.
+     Gerçek bilgiler girildiğinde placeholder metinler otomatik
+     güncellenir ve ilgili butonlar aktif hale gelir.
+     ========================================================= */
+  const BUSINESS = {
+    name: "Kötekli Galata Cafe",
+    phoneDisplay: "0252 223 85 05",
+    phoneTel: "+902522238505",
+    whatsappNumber: "905374894968",             // örn. "905XXXXXXXXX"
+    address: "Kötekli Mahallesi, 263. Sokak No: 22/A, Menteşe / Muğla",
+    instagramUrl: "https://www.instagram.com/galatacafekotekli/",               // örn. "https://instagram.com/kullaniciadi"
+    mapsUrl: "https://www.google.com/maps?cid=3869732096813424053",                    // örn. "https://maps.google.com/?q=..."
+    openingHours: "Her gün 08.00–04.00"
+  };
+
+  function setHref(id, url, fallbackTitle){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(url){ el.href = url; }
+    else { el.removeAttribute("target"); el.href = "#iletisim"; el.title = fallbackTitle || "Bilgi yakında eklenecek"; }
+  }
+  const waUrl = BUSINESS.whatsappNumber ? ("https://wa.me/" + BUSINESS.whatsappNumber) : "";
+  ["waNavBtn","waMobileBtn","waContactBtn","footerWaLink"].forEach(id => setHref(id, waUrl, "WhatsApp numarası eklenecek"));
+  setHref("instaBtn", BUSINESS.instagramUrl, "Instagram bağlantısı eklenecek");
+  setHref("footerInstaLink", BUSINESS.instagramUrl, "Instagram bağlantısı eklenecek");
+  setHref("mapsContactBtn", BUSINESS.mapsUrl, "Harita konumu eklenecek");
+  setHref("mapsLink", BUSINESS.mapsUrl, "Harita konumu eklenecek");
+
+  document.getElementById("addressValue").textContent = BUSINESS.address;
+  document.getElementById("phoneValue").textContent = BUSINESS.phoneDisplay;
+  document.getElementById("hoursValue").textContent = BUSINESS.openingHours;
+  document.getElementById("instaValue").textContent = "@galatacafekotekli";
+  document.getElementById("footerAddress").textContent = BUSINESS.address;
+  document.getElementById("copyrightLine").textContent = "© " + new Date().getFullYear() + " " + BUSINESS.name + ". Tüm hakları saklıdır.";
+
+  /* ---------- nav scroll state ---------- */
+  const nav = document.getElementById("siteNav");
+  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 30);
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+
+  /* ---------- mobile nav ---------- */
+  const mobileNav = document.getElementById("mobileNav");
+  const openBtn = document.getElementById("menuOpenBtn");
+  const closeBtn = document.getElementById("menuCloseBtn");
+  function openNav(){
+    mobileNav.inert = false;
+    mobileNav.classList.add("open");
+    openBtn.setAttribute("aria-expanded","true");
+    document.body.style.overflow = "hidden";
+    closeBtn.focus();
+  }
+  function closeNav(){
+    if(mobileNav.inert) return;
+    openBtn.focus({preventScroll:true});
+    mobileNav.inert = true;
+    mobileNav.classList.remove("open");
+    openBtn.setAttribute("aria-expanded","false");
+    document.body.style.overflow = "";
+  }
+  mobileNav.addEventListener("keydown", event => {
+    if(event.key === "Escape") closeNav();
+  });
+  window.matchMedia("(min-width: 901px)").addEventListener("change", event => {
+    if(event.matches) closeNav();
+  });
+  openBtn.addEventListener("click", openNav);
+  closeBtn.addEventListener("click", closeNav);
+  mobileNav.querySelectorAll(".mnav-link").forEach(a => a.addEventListener("click", closeNav));
+
+  const MENU = {
+    "Kahvaltılar": [
+      {
+        title: "Kahvaltı Tabakları",
+        note: "",
+        items: [
+          ["Serpme Kahvaltı", "2, 3 veya 4 kişilik. Peynir çeşitleri, salam, sosis, bal, reçel, çikolata, tereyağı, zeytin, ezme, salatalık, domates, meyve, patates kızartması, soğan halkası, kroket, peynirli ıspanaklı börek, sigara böreği, waffle, günün sıcağı, menemen ve pot çay."],
+          ["Galata Kahvaltı", "Peynir çeşitleri, salam, sosis, bal, reçel, çikolata, tereyağı, patates kızartması, soğan halkası, kroket, sigara böreği, zeytin, domates, salatalık, haşlanmış yumurta, acuka ve fincan çay."],
+          ["Ortaköy Kahvaltı", "Soslu sosis, ıspanaklı peynirli börek, waffle, menemen sosu, patates kızartması, sigara böreği, soğan halkası, kroket, hellim, sahanda sucuklu yumurta ve fincan çay."],
+          ["Karaköy Kahvaltı", "Simit ortasında yumurta, beyaz peynir, kaşar, salatalık, domates, zeytin, acuka, patates kızartması, sosis ve fincan çay."],
+          ["Şişhane Kahvaltı", "Tütsülenmiş sosis, sucuklu yumurta, patates kızartması, soğan halkası, kroket ve fincan çay."],
+          ["Pera Kahvaltı", "Waffle, muz, çilek, çikolata, üzerinde yumurta bulunan cheddarlı ve hindi fümeli tost, fincan çay."]
+        ]
+      },
+      {
+        title: "Omletler ve Sahanda Seçenekler",
+        note: "Omletler domates ve salatalıkla servis edilir.",
+        items: [
+          ["Omlet"],
+          ["Kaşarlı Omlet"],
+          ["Beyaz Peynirli Omlet"],
+          ["Karışık Omlet", "Kaşar ve sucuk."],
+          ["Üç Peynirli Omlet", "Kaşar, beyaz peynir ve lor."],
+          ["Mantarlı Omlet"],
+          ["Sahanda Yumurta"],
+          ["Sahanda Sucuklu Yumurta"],
+          ["Sahanda Sucuk"],
+          ["Sahanda Kavurmalı Yumurta"]
+        ]
+      },
+      {
+        title: "Menemenler",
+        note: "",
+        items: [
+          ["Menemen"],
+          ["Kaşarlı Menemen"],
+          ["Çakallı Menemeni"],
+          ["Karışık Menemen", "Kaşar ve sucuk."],
+          ["Kavurmalı Menemen"]
+        ]
+      }
+    ],
+    "Tostlar ve Ekmek Üstü": [
+      {
+        title: "Tostlar",
+        note: "Patates kızartması ve iki sos ile servis edilir. Bazlama, ekstra peynir ve patates seçenekleri bulunur.",
+        items: [
+          ["Kaşarlı Tost"],
+          ["Beyaz Peynirli Tost"],
+          ["Sucuklu Tost"],
+          ["Karışık Tost", "Kaşar ve sucuk."],
+          ["Tostoyevski Tost", "Kaşar, sucuk ve salça."],
+          ["Tost Acı Söyler", "Beyaz peynir, sucuk, domates ve acı sos."],
+          ["Galata Special Tost", "Cheddar, hindi füme, domates ve kekik."],
+          ["Kötü Gün Tostu", "Cheddar, salam ve domates."],
+          ["İyi Gün Tostu", "Kaşar, kavurma, biber ve kekik."],
+          ["Can Tostum", "Beyaz peynir, pesto sos ve sucuk."],
+          ["Çılgın Tost", "Kaşar, salam, sucuk ve sosis."],
+          ["Bazlama Atom Tost", "Kaşar, salam, sucuk, sosis ve yumurta."],
+          ["Bazlama Tavuklu Tost", "Kaşar, tavuk, biber ve domates."],
+          ["Bazlama Çıtır Tavuklu Tost", "Kaşar, çıtır tavuk, biber, yeşillik ve domates."]
+        ]
+      },
+      {
+        title: "Ekmek Üstü Lezzetler",
+        note: "",
+        items: [
+          ["Ekmek Üstü Lezzet No. 1", "Pizza sosu, kaşar, zeytin, salam, sosis ve mısır. Yanında patates kızartması."],
+          ["Ekmek Üstü Lezzet No. 2", "Domates sosu, pesto, beyaz peynir, yeşil zeytin ve ceviz. Yanında patates kızartması."],
+          ["Ekmek Üstü Lezzet No. 3", "Mozzarella, beyaz peynir, cheddar, hindi füme ve zeytin. Yanında patates kızartması."]
+        ]
+      }
+    ],
+    "Ana Yemekler": [
+      {
+        title: "Tavuk Yemekleri",
+        note: "Makarna, patates kızartması ve iki sosla servis edilir. Ekstra makarna, patates, tavuk ve sos seçenekleri bulunur.",
+        items: [
+          ["Izgara Tavuk"],
+          ["Mantar Soslu Izgara Tavuk"],
+          ["Mantar Soslu Tavuk"],
+          ["Soya Soslu Tavuk"],
+          ["Köri Soslu Tavuk"],
+          ["Barbekü Soslu Tavuk"],
+          ["Meksika Soslu Tavuk"],
+          ["Sweet Chili Soslu Tavuk"],
+          ["Tikka Masala Soslu Tavuk"],
+          ["Dağ Kekikli Tavuk"],
+          ["Teriyaki Soslu Tavuk"],
+          ["Çin Usulü Tavuk"],
+          ["Pesto Soslu Tavuk"],
+          ["Tavuk Çökertme"],
+          ["Tavuk Schnitzel"],
+          ["Mantar Soslu Tavuk Schnitzel"]
+        ]
+      }
+    ],
+    "Pizzalar": [
+      {
+        title: "Pizzalar",
+        note: "Ekşi mayalı hamur isteğinizi sipariş sırasında belirtebilirsiniz. Ekstra peynir, sos ve tavuk seçenekleri bulunur.",
+        items: [
+          ["Margarita", "Pizza sosu, mozzarella ve domates."],
+          ["Pesto Soslu Margarita", "Pizza sosu, mozzarella, pesto ve domates."],
+          ["Pepperoni", "Pizza sosu, mozzarella ve sucuk."],
+          ["Italiano", "Pizza sosu, mozzarella, salam, sosis, mantar ve mısır."],
+          ["Ton Balıklı Pizza", "Pizza sosu, mozzarella, ton balığı, soğan ve mısır."],
+          ["Vejetaryen Pizza", "Pizza sosu, mozzarella, mısır, biber, mantar, zeytin ve domates."],
+          ["BBQ Soslu Tavuklu Pizza", "Pizza sosu, mozzarella, BBQ soslu tavuk, biber, mantar ve domates."],
+          ["Sweet Chili Soslu Tavuklu Pizza", "Pizza sosu, mozzarella, sweet chili soslu tavuk, biber, mantar ve domates."],
+          ["Tikka Masala Soslu Tavuklu Pizza", "Pizza sosu, mozzarella, tikka masala soslu tavuk, biber, mantar ve domates."],
+          ["Teriyaki Soslu Tavuklu Pizza", "Pizza sosu, mozzarella, teriyaki soslu tavuk, biber, mantar ve domates."],
+          ["Karışık Pizza", "Pizza sosu, mozzarella, sucuk, salam, sosis, mantar, biber, mısır ve zeytin."],
+          ["Galata Special Pizza No. 1", "Pizza sosu, mozzarella, sucuk, tütsülenmiş sosis, hindi füme, mantar, mısır ve cheddar."],
+          ["Galata Special Pizza No. 2", "Pizza sosu, mozzarella, hindi füme, tütsülenmiş sosis, soğan, sarımsak, mantar, kekik ve hellim."]
+        ]
+      }
+    ],
+    "Burgerler ve Wrapler": [
+      {
+        title: "Burgerler",
+        note: "Patates kızartması ve iki sosla servis edilir. Ekstra peynir ve patates seçenekleri bulunur.",
+        items: [
+          ["Hamburger", "Hamburger köftesi, domates, marul ve özel sos."],
+          ["Cheese Burger", "Hamburger köftesi, cheddar, domates, marul ve özel sos."],
+          ["Chicken Burger", "Fileto tavuk, domates, marul ve özel sos."],
+          ["BBQ Soslu Burger", "Hamburger köftesi, BBQ sos, domates ve marul."],
+          ["Mantar Soslu Burger", "Hamburger köftesi, mantar sosu, domates ve marul."],
+          ["Galata Special Burger No. 1", "Çift köfte, cheddar, domates, marul, karamelize soğan, turşu ve özel sos."],
+          ["Galata Special Burger No. 2", "Çift köfte, cheddar, domates, marul, hellim ve özel sos."],
+          ["Vejetaryen Burger", "Vejetaryen köfte, karamelize soğan ve sebzeli özel sos."]
+        ]
+      },
+      {
+        title: "Wrapler",
+        note: "Patates kızartması ve iki sosla servis edilir. Ekstra peynir, patates ve tavuk seçenekleri bulunur.",
+        items: [
+          ["Tavuk Wrap", "Sotelenmiş tavuk, kaşar ve biber."],
+          ["Çıtır Tavuk Wrap", "Çıtır tavuk, kaşar ve domates."],
+          ["Caesar Wrap", "Caesar soslu tavuk, kaşar ve yeşillik."],
+          ["Mantar Soslu Wrap", "Mantar soslu tavuk ve kaşar."],
+          ["Sweet Chili Soslu Wrap", "Sweet chili soslu tavuk, kaşar ve biber."],
+          ["Tikka Masala Soslu Wrap", "Tikka masala soslu tavuk, kaşar ve biber."],
+          ["Köri Soslu Wrap", "Köri soslu tavuk, kaşar ve biber."],
+          ["BBQ Soslu Wrap", "BBQ soslu tavuk, kaşar ve biber."],
+          ["Teriyaki Soslu Wrap", "Teriyaki soslu tavuk, kaşar ve biber."],
+          ["Çin Usulü Tavuk Wrap", "Çin usulü tavuk, kaşar ve biber."],
+          ["Patso Wrap", "Patates kızartması, sosis, kaşar, cheddar, ketçap, mayonez ve soğan halkası."]
+        ]
+      }
+    ],
+    "Makarnalar ve Mantılar": [
+      {
+        title: "Makarnalar ve Mantılar",
+        note: "Ekstra peynir, tavuk ve sos seçenekleri bulunur.",
+        items: [
+          ["Fettuccine Alfredo", "Fettuccine, krema, mantar, tavuk ve kaşar."],
+          ["Kremalı Tavuklu Penne", "Penne, krema, mantar, tavuk ve kaşar."],
+          ["Penne Arrabbiata", "Penne, acı sos, mısır ve zeytin."],
+          ["Pesto Soslu Penne", "Penne, krema, pesto ve kaşar."],
+          ["Köri Soslu Penne", "Penne, krema, köri sosu ve kaşar."],
+          ["Ton Balıklı Penne", "Penne, krema, ton balığı ve mısır."],
+          ["Mantı"],
+          ["Yalancı Mantı"]
+        ]
+      }
+    ],
+    "Salatalar ve Atıştırmalıklar": [
+      {
+        title: "Salatalar",
+        note: "Ekstra peynir ve tavuk seçenekleri bulunur.",
+        items: [
+          ["Akdeniz Salata", "Mevsim yeşillikleri, domates, beyaz peynir ve dilim zeytin."],
+          ["Ton Balıklı Salata", "Ton balığı, mevsim yeşillikleri, domates, mısır ve soğan."],
+          ["Caesar Salata", "Izgara tavuk, marul, domates, Caesar sos ve mısır."],
+          ["Pesto Soslu Hellim Salata", "Hellim, pesto ve mevsim yeşillikleri."],
+          ["Galata Special Salata", "Izgara tavuk, mevsim yeşillikleri, mevsim meyvesi, ceviz ve özel sos."]
+        ]
+      },
+      {
+        title: "Atıştırmalıklar",
+        note: "Atıştırmalık tabakları iki sosla servis edilir.",
+        items: [
+          ["Patates Tabağı"],
+          ["Sigara Böreği Tabağı", "6 sigara böreği ve patates kızartması."],
+          ["Sosis Tabağı", "6 sosis ve patates kızartması."],
+          ["Soğan Halkası Tabağı", "6 soğan halkası ve patates kızartması."],
+          ["Çıtır Tavuk Tabağı", "6 çıtır tavuk ve patates kızartması."],
+          ["Galata Aperitif Tabağı", "İkişer adet çıtır tavuk, kroket, soğan halkası, sigara böreği ve sosis. Yanında patates kızartması."]
+        ]
+      }
+    ],
+    "Tatlılar": [
+      {
+        title: "Tatlılar",
+        note: "Ekstra sos seçenekleri: fıstık, beyaz çikolata ve çikolata.",
+        items: [
+          ["Sufle", "Kendi yapımımız. Dondurma ile servis edilir."],
+          ["Fıstık Rüyası"],
+          ["San Sebastian", "Çikolata ile servis edilir."],
+          ["Limonlu Cheesecake"],
+          ["Yaban Mersinli Cheesecake"],
+          ["Frambuaz Cheesecake"],
+          ["Kalpli Pasta"],
+          ["Ballı Cevizli Pasta", "Sıcak sütle servis edilir."],
+          ["Tiramisu"],
+          ["Çikolatalı Pasta"],
+          ["Magnolya"]
+        ]
+      },
+      {
+        title: "Waffle",
+        note: "Muz, çilek ve kivi. Ekstra dondurma, fıstık sosu veya çikolata sosu seçilebilir.",
+        items: [
+          ["Bir Meyveli Waffle"],
+          ["İki Meyveli Waffle"],
+          ["Üç Meyveli Waffle"]
+        ]
+      },
+      {
+        title: "Dondurma",
+        note: "",
+        items: [
+          ["Dondurma", "1, 2, 3 veya 4 top. Vanilya, kakao, limon, çilek, karamel, muz ve Antep fıstığı."]
+        ]
+      }
+    ],
+    "Kahveler": [
+      {
+        title: "Dünya Kahveleri",
+        note: "Laktozsuz süt seçeneği bulunur.",
+        items: [
+          ["Espresso"],
+          ["Double Espresso"],
+          ["Americano"],
+          ["Con Panna"],
+          ["Affogato"],
+          ["Cortado"],
+          ["Latte"],
+          ["Cappuccino"],
+          ["Mocha"],
+          ["Zebra Mocha"],
+          ["White Chocolate Mocha"],
+          ["Flat White"],
+          ["Nutella Mocha"],
+          ["Marshmallow Mocha"],
+          ["Mocha Coconut"],
+          ["Irish Nut Cream"],
+          ["Sade Nescafé"],
+          ["Sütlü Nescafé"],
+          ["Popcorn Latte"],
+          ["Toffee Nut Latte"],
+          ["Cafe Miel"],
+          ["Chai Tea Latte"],
+          ["Karamel Latte"],
+          ["Mocha Karamel Latte"],
+          ["Crème Brûlée Latte"],
+          ["Blueberry Latte"],
+          ["Madagaskar Vanilya Latte"],
+          ["Salted Caramel Latte"],
+          ["Pistachio Latte"],
+          ["White C. Pistachio Latte"],
+          ["Probis Latte"],
+          ["Biscoff Latte"],
+          ["Vanilya Latte"],
+          ["Pumpkin Latte"],
+          ["Cookie Karamel Latte"]
+        ]
+      },
+      {
+        title: "Filtre Kahveler",
+        note: "",
+        items: [
+          ["Filtre Kahve"],
+          ["Sütlü Filtre Kahve"],
+          ["Aromalı Filtre Kahve", "Vanilya, karamel, Irish ve fındık."],
+          ["Soğuk Filtre Kahve"]
+        ]
+      },
+      {
+        title: "Türk Kahveleri",
+        note: "Tek veya duble servis seçeneği.",
+        items: [
+          ["Türk Kahvesi"],
+          ["Süvari"],
+          ["Sütlü Türk Kahvesi"],
+          ["Damla Sakızlı Türk Kahvesi"],
+          ["Gönülçelen Kahvesi", "Bitter ve portakal."],
+          ["Çilekli Türk Kahvesi"],
+          ["Dibek Kahvesi"],
+          ["Menengiç Kahvesi"]
+        ]
+      },
+      {
+        title: "Soğuk Kahveler",
+        note: "",
+        items: [
+          ["Ice Americano"],
+          ["Ice Latte"],
+          ["Aromalı Ice Latte", "Vanilya, karamel, fındık, çilek, Irish, muz, Hindistan cevizi, yaban mersini, Madagaskar, pistachio, white C. pistachio, salted caramel ve pumpkin."],
+          ["Ice Mocha"],
+          ["Ice White Chocolate Mocha"],
+          ["Aromalı Ice Mocha", "Vanilya, karamel, fındık, çilek, Irish, muz, Hindistan cevizi, pistachio, yaban mersini ve white C. pistachio."],
+          ["Ice Crème Brûlée Latte"],
+          ["Ice Zebra Mocha"],
+          ["Ice Irish Nut Cream"]
+        ]
+      },
+      {
+        title: "Frappe",
+        note: "",
+        items: [
+          ["Frappe"],
+          ["Aromalı Frappe", "Fındık, karamel, vanilya, çikolata, muz, Irish, çilek, Hindistan cevizi, pistachio, yaban mersini ve salted caramel."]
+        ]
+      }
+    ],
+    "Çaylar ve Sıcak İçecekler": [
+      {
+        title: "Çaylar",
+        note: "Bal eklenebilir.",
+        items: [
+          ["Çay"],
+          ["Fincan Çay"],
+          ["Earl Grey"],
+          ["Ihlamur"],
+          ["Adaçayı"],
+          ["Papatya"],
+          ["Kuşburnu"],
+          ["Elma Çayı"],
+          ["Yeşil Çay"],
+          ["Limonlu Yeşil Çay"],
+          ["Yaseminli Yeşil Çay"],
+          ["Nar Çayı"],
+          ["Nane-Limon"],
+          ["Böğürtlen Çayı"],
+          ["Elma-Tarçın"],
+          ["Kış Çayı"],
+          ["Christmas Tea"],
+          ["Orman Meyveli Çay"],
+          ["Gripsavar", "Zencefil, limon ve bal."]
+        ]
+      },
+      {
+        title: "Salep",
+        note: "",
+        items: [
+          ["Salep"],
+          ["Çikolatalı Salep"],
+          ["Fındıklı Salep"],
+          ["Karamelli Salep"],
+          ["Damla Sakızlı Salep"]
+        ]
+      },
+      {
+        title: "Sıcak Sütler",
+        note: "Bal eklenebilir.",
+        items: [
+          ["Sıcak Süt"],
+          ["Çikolatalı Sıcak Süt"],
+          ["Tarçınlı Sıcak Süt"],
+          ["Nutellalı Sıcak Süt"]
+        ]
+      },
+      {
+        title: "Sıcak Çikolatalar",
+        note: "",
+        items: [
+          ["Sıcak Çikolata"],
+          ["Beyaz Sıcak Çikolata"],
+          ["Aromalı Sıcak Çikolata", "Çilek, karamel, vanilya, muz, Hindistan cevizi, pistachio, white pistachio ve marshmallow."]
+        ]
+      }
+    ],
+    "Soğuk İçecekler": [
+      {
+        title: "Limonatalar",
+        note: "",
+        items: [
+          ["Limonata"],
+          ["Aromalı Limonata", "Nane, çilek, elma, nar, karpuz ve yaban mersini."],
+          ["Dondurmalı Limonata", "Çilek, vanilya, limon ve muz."]
+        ]
+      },
+      {
+        title: "Limonata Kokteylleri",
+        note: "",
+        items: [
+          ["Yeşil Elma"],
+          ["Çilek"],
+          ["Şeftali"],
+          ["Karadut"]
+        ]
+      },
+      {
+        title: "Ev Yapımı Soğuk Çaylar",
+        note: "",
+        items: [
+          ["Şeftali"],
+          ["Mango"],
+          ["Karadut"],
+          ["Çilek"]
+        ]
+      },
+      {
+        title: "Kokteyller",
+        note: "Bal eklenebilir.",
+        items: [
+          ["Atom", "Muz, ceviz, süt ve bal."],
+          ["Çikolatalı Atom", "Muz, ceviz, süt, bal ve çikolata."],
+          ["Bold Pilot", "Muz, çilek, dondurma, badem, ceviz ve süt."],
+          ["Mojito", "Taze nane, şeker şurubu, limon ve Sprite."],
+          ["Apple Mojito", "Elma şurubu, taze nane, şeker şurubu, limon ve Sprite."],
+          ["Strawberry Mojito", "Çilek şurubu, taze nane, şeker şurubu, limon ve Sprite."],
+          ["Virgin Barbados", "Muz, sıkma portakal suyu ve Hindistan cevizi şurubu."],
+          ["Protein Kokteyl", "Protein tozu, muz, süt ve bisküvi."],
+          ["Cold Start Tea (Şekersiz)", "Yaseminli yeşil çay, elma-tarçın, limon ve zencefil."],
+          ["Kırmızı Antifriz (Şekersiz)", "Kuşburnu, tarçın, zencefil ve limon."],
+          ["Vecihi", "Şeftalili Red Bull, muz, çilek ve dondurma."],
+          ["Hezarfen", "Hindistan cevizli Red Bull, kivi, çilek, dondurma ve meyve püresi."],
+          ["Pegasus", "Şeftalili Red Bull, sıkma portakal suyu, dondurma ve muz."],
+          ["Alamut", "Yaban mersinli Red Bull, dondurma, çilek, kahve çekirdeği ve meyve püresi."],
+          ["Misred", "Karpuzlu Red Bull, çilek, dondurma ve meyve püresi."]
+        ]
+      },
+      {
+        title: "Milkshake",
+        note: "Dondurma ile hazırlanır.",
+        items: [
+          ["Çikolatalı"],
+          ["Çilekli"],
+          ["Vanilyalı"],
+          ["Karamelli"],
+          ["Muzlu"],
+          ["Limonlu"],
+          ["Oreolu"],
+          ["Cocostar"],
+          ["Antep Fıstıklı"],
+          ["Vanilya Badem"],
+          ["Magnum Milkshake"],
+          ["Cookie Milkshake"],
+          ["Marshmallow Milkshake"]
+        ]
+      },
+      {
+        title: "Smoothie",
+        note: "",
+        items: [
+          ["Çilek"],
+          ["Muz"],
+          ["Kivi"],
+          ["Kavun"]
+        ]
+      },
+      {
+        title: "Frozen",
+        note: "",
+        items: [
+          ["Elma"],
+          ["Çilek"],
+          ["Karpuz"],
+          ["Karadut"],
+          ["Çarkıfelek"],
+          ["Orman Meyveli"],
+          ["Kavun"],
+          ["Mango"],
+          ["Şeftali"],
+          ["Ananas"],
+          ["Yaban Mersini"]
+        ]
+      },
+      {
+        title: "Soğuk Çikolatalar",
+        note: "",
+        items: [
+          ["Soğuk Çikolata"],
+          ["Beyaz Soğuk Çikolata"],
+          ["Aromalı Soğuk Çikolata", "Çilek, muz, karamel, vanilya, Hindistan cevizi, marshmallow, pistachio, white pistachio ve yaban mersini."],
+          ["Ice Chocolate Oreo"],
+          ["Ice White Chocolate Oreo"]
+        ]
+      },
+      {
+        title: "Diğer Soğuk İçecekler",
+        note: "Ekstra limon suyu seçeneği bulunur.",
+        items: [
+          ["Cola"],
+          ["Cola Zero"],
+          ["Fanta"],
+          ["Sprite"],
+          ["Fuse Tea", "Mango-ananas, limon, şeftali ve karpuz."],
+          ["Cappy", "Vişne, şeftali ve karışık."],
+          ["Su"],
+          ["Soda"],
+          ["Meyveli Soda", "Limon, nar, elma ve karpuz-çilek."],
+          ["Ayran"],
+          ["Churchill"],
+          ["Sıkma Portakal"],
+          ["Red Bull"],
+          ["Şekersiz Red Bull"],
+          ["Aromalı Red Bull"]
+        ]
+      }
+    ]
+  };
+  const tabsEl = document.getElementById("menuTabs");
+  const gridEl = document.getElementById("menuGrid");
+  const categoryButtons = new Map();
+
+  function appendMenuElement(parent, tag, className, text){
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = text;
+    parent.appendChild(element);
+    return element;
+  }
+
+  function renderCategory(category){
+    categoryButtons.forEach((button, name) => {
+      button.setAttribute("aria-pressed", String(name === category));
+    });
+    gridEl.replaceChildren();
+    MENU[category].forEach(group => {
+      const section = appendMenuElement(gridEl, "section", "menu-group", "");
+      appendMenuElement(section, "h3", "", group.title);
+      if(group.note){
+        appendMenuElement(section, "p", "menu-group-note", group.note);
+      }
+      const list = appendMenuElement(section, "ul", "menu-grid", "");
+      group.items.forEach(([name, description]) => {
+        const item = appendMenuElement(list, "li", "menu-item", "");
+        const content = appendMenuElement(item, "div", "", "");
+        appendMenuElement(content, "div", "mi-name", name);
+        if(description){
+          appendMenuElement(content, "p", "mi-desc", description);
+        }
+      });
+    });
+  }
+
+  Object.keys(MENU).forEach(category => {
+    const button = appendMenuElement(tabsEl, "button", "menu-tab", category);
+    button.type = "button";
+    button.setAttribute("aria-controls", "menuGrid");
+    button.addEventListener("click", () => renderCategory(category));
+    categoryButtons.set(category, button);
+  });
+  document.querySelectorAll(".menu-feature").forEach(card => {
+    card.addEventListener("click", () => {
+      const category = card.dataset.category;
+      renderCategory(category);
+      categoryButtons.get(category).focus({preventScroll:true});
+      tabsEl.scrollIntoView({block:"start"});
+    });
+  });
+  renderCategory("Kahvaltılar");
+
+  /* ---------- gallery ---------- */
+  const lightbox = document.getElementById("lightbox");
+  const lightboxPhoto = document.getElementById("lightboxPhoto");
+  const galleryTiles = Array.from(document.querySelectorAll("#galleryGrid .gallery-tile"));
+  let activePhoto = 0;
+
+  function showGalleryPhoto(index){
+    activePhoto = (index + galleryTiles.length) % galleryTiles.length;
+    const tile = galleryTiles[activePhoto];
+    lightboxPhoto.src = tile.href;
+    lightboxPhoto.alt = tile.querySelector("img").alt;
+    for(const property of ["--photo-light", "--photo-contrast"]){
+      lightboxPhoto.style.setProperty(property, tile.style.getPropertyValue(property));
+    }
+  }
+
+  galleryTiles.forEach((tile, index) => {
+    tile.addEventListener("click", event => {
+      if(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      showGalleryPhoto(index);
+      lightbox.showModal();
+    });
+  });
+  document.getElementById("lightbox-prev").addEventListener("click", () => showGalleryPhoto(activePhoto - 1));
+  document.getElementById("lightbox-next").addEventListener("click", () => showGalleryPhoto(activePhoto + 1));
+  lightbox.addEventListener("keydown", event => {
+    if(event.key === "ArrowLeft" || event.key === "ArrowRight"){
+      event.preventDefault();
+      showGalleryPhoto(activePhoto + (event.key === "ArrowLeft" ? -1 : 1));
+    }
+  });
+  document.getElementById("lightboxClose").addEventListener("click", () => lightbox.close());
+  lightbox.addEventListener("click", event => {
+    if(event.target === lightbox) lightbox.close();
+  });
+
+  const googleReviews = document.getElementById("googleReviews");
+  function moveGoogleReviews(direction){
+    const card = googleReviews.firstElementChild;
+    const gap = parseFloat(getComputedStyle(googleReviews).columnGap);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    googleReviews.scrollBy({
+      left: direction * (card.getBoundingClientRect().width + gap),
+      behavior: reducedMotion ? "instant" : "smooth"
+    });
+  }
+  document.getElementById("reviewPrev").addEventListener("click", () => moveGoogleReviews(-1));
+  document.getElementById("reviewNext").addEventListener("click", () => moveGoogleReviews(1));
+
+  // Optional 3D enhancement. Core interactions are already ready.
+  const threeScript = document.createElement("script");
+  threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+  threeScript.crossOrigin = "anonymous";
+  threeScript.addEventListener("load", () => {
+    try{
+      initBackdrop();
+    }catch(error){
+      document.getElementById("scene-canvas").hidden = true;
+      console.warn("3D arka plan başlatılamadı.", error);
+    }
+  }, {once:true});
+  document.head.appendChild(threeScript);
+
+  function initBackdrop(){
+    const canvas = document.getElementById('scene-canvas');
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const isSmall = window.innerWidth < 700;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 9);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true, powerPreference:'low-power' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.25 : 1.5));
+
+    const goldMat = new THREE.MeshPhysicalMaterial({
+      color: 0xc9a35c, metalness: 1, roughness: 0.28, reflectivity: 1, clearcoat: 0.4, clearcoatRoughness: 0.3
+    });
+    const geo = new THREE.TorusKnotGeometry(2.1, 0.32, isSmall ? 96 : 160, 20, 2, 3);
+    const mesh = new THREE.Mesh(geo, goldMat);
+    scene.add(mesh);
+
+    const particleCount = isSmall ? 140 : 300;
+    const positions = new Float32Array(particleCount * 3);
+    for(let i=0;i<particleCount;i++){
+      positions[i*3] = (Math.random()-0.5) * 26;
+      positions[i*3+1] = (Math.random()-0.5) * 20;
+      positions[i*3+2] = (Math.random()-0.5) * 16;
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const pMat = new THREE.PointsMaterial({ color:0xc9a35c, size:0.02, transparent:true, opacity:0.5 });
+    const particles = new THREE.Points(pGeo, pMat);
+    scene.add(particles);
+
+    const keyLight = new THREE.PointLight(0xffe3b0, 3.2, 40); keyLight.position.set(6,5,8); scene.add(keyLight);
+    const rimLight = new THREE.PointLight(0x8899ff, 1.2, 40); rimLight.position.set(-8,-4,-6); scene.add(rimLight);
+    scene.add(new THREE.AmbientLight(0x201a12, 1.4));
+
+    let targetX = 0, targetY = 0;
+    window.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX / window.innerWidth - 0.5) * 0.6;
+      targetY = (e.clientY / window.innerHeight - 0.5) * 0.6;
+    });
+
+    // Total document scroll drives rotation, and mesh migrates slightly
+    // toward the viewport edge so it reads as a subtle backdrop once
+    // content sections begin, rather than competing with text.
+    let scrollT = 0;
+    function updateScroll(){
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      scrollT = max > 0 ? window.scrollY / max : 0;
+    }
+
+
+    const clock = new THREE.Clock();
+    let frame = 0;
+    let lastFrame = -Infinity;
+    const visibleSections = new Set();
+    let contextAvailable = true;
+
+    function animate(timestamp){
+      frame = requestAnimationFrame(animate);
+      if(timestamp - lastFrame < (isSmall ? 31 : 15)) return;
+      lastFrame = timestamp;
+      draw();
+    }
+
+    function draw(){
+      updateScroll();
+      const t = clock.getElapsedTime();
+      if(!motionPreference.matches){
+        mesh.rotation.x = t * 0.1 + scrollT * 3.2;
+        mesh.rotation.y = t * 0.15 + scrollT * 4.4;
+        particles.rotation.y = t * 0.015;
+        mesh.position.y = Math.sin(t * 0.4) * 0.12 - scrollT * 1.6;
+        mesh.position.x = scrollT * 2.4;
+      }
+      const scale = 1 - Math.min(scrollT * 0.35, 0.3);
+      mesh.scale.setScalar(scale);
+      camera.position.x += (targetX - camera.position.x) * 0.04;
+      camera.position.y += (-targetY - camera.position.y) * 0.04;
+      camera.lookAt(0,0,0);
+      renderer.render(scene, camera);
+    }
+    function updateAnimation(){
+      const shouldRun = contextAvailable && !document.hidden && !motionPreference.matches && visibleSections.size > 0;
+      if(shouldRun && !frame){
+        frame = requestAnimationFrame(animate);
+      }else if(!shouldRun && frame){
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    }
+
+    draw();
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) visibleSections.add(entry.target);
+        else visibleSections.delete(entry.target);
+      });
+      updateAnimation();
+    });
+    document.querySelectorAll(".hero, #hakkimizda").forEach(section => observer.observe(section));
+    document.addEventListener("visibilitychange", updateAnimation);
+    motionPreference.addEventListener("change", updateAnimation);
+    canvas.addEventListener("webglcontextlost", event => {
+      event.preventDefault();
+      contextAvailable = false;
+      canvas.hidden = true;
+      updateAnimation();
+    });
+    canvas.addEventListener("webglcontextrestored", () => {
+      contextAvailable = true;
+      canvas.hidden = false;
+      draw();
+      updateAnimation();
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      if(contextAvailable && !frame && visibleSections.size) draw();
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
